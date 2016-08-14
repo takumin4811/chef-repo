@@ -37,7 +37,7 @@ doc/
 .kitchen/
 
 # Vagrant
-Vagrantfile
+#Vagrantfile
 .vagrant/
 
 # Kitchen Tests Local Mode Data
