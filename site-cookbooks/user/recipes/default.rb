@@ -8,8 +8,9 @@
 #
 
 
-user "front" do 
+user "front" do
 		comment "front"
+		uid "501"
 		group "ec2-user"
 		home "/home/front"
 		shell "/bin/bash"
@@ -20,8 +21,9 @@ end
 
 
 
-user "apl" do 
+user "apl" do
 		comment "apl"
+		uid "502"
 		group "ec2-user"
 		home "/home/apl"
 		shell "/bin/bash"
@@ -48,12 +50,10 @@ end
 			cwd "/home/"+username
 			environment "HOME" => '/home/'+username
 			code <<-EOC
-					ls 
+					ls
 					pwd
 					sh dotfiles/setup.sh
 			EOC
 	end
 
 end
-
-

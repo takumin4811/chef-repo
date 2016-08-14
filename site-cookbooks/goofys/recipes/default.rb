@@ -16,18 +16,31 @@ end
 
 
 bash "setup goofys" do
-	user "ec2-user"
-	group "ec2-user"
-	cwd "/home/ec2-user"
-	environment "HOME" => '/home/ec2-user'
-	environment "GOPATH" => '/home/ec2-user/go'
+	user "root"
+	group "root"
+	cwd "/root"
+	environment "HOME" => '/root'
+	environment "GOPATH" => '/root/go'
 	code <<-EOC
 		go get github.com/kahing/goofys
 		go install github.com/kahing/goofys
-		S3_MOUNT_NAME='/mnt/s3'
-		S3_BUCKET_NAME='mystrage1'
-		mkdir  /mnt/s3
-		${GOPATH}/bin/goofys ${S3_BUCKET_NAME} ${S3_MOUNT_NAME} -o allow_other,--uid=500,--gid=500
-
 	EOC
 end
+
+
+%w(ec2-user apl front).each do |username|↲
+	»-directory "/home/#{username}/s3" do↲
+	»-»-owner "#{username}"↲
+	»-»-group "ec2-user"↲
+	»-»-recursive false↲
+	»-»-mode 0755↲
+	»-»-action :create↲
+	»-end↲
+end
+
+cookbook_file "/etc/fstab" do↲
+»-source "fstab"↲
+»-owner "root"↲
+»-group "root"↲
+»-mode "0644"↲
+end↲
