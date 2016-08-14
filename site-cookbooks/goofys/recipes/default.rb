@@ -28,19 +28,22 @@ bash "setup goofys" do
 end
 
 
-%w(ec2-user apl front).each do |username|↲
-	»-directory "/home/#{username}/s3" do↲
-	»-»-owner "#{username}"↲
-	»-»-group "ec2-user"↲
-	»-»-recursive false↲
-	»-»-mode 0755↲
-	»-»-action :create↲
-	»-end↲
+%w(ec2-user apl front).each do |username|
+
+	directory "/home/#{username}/s3" do
+		owner "#{username}"
+		group "ec2-user"
+		recursive false
+		mode 0744
+		action :create
+	end
 end
 
-cookbook_file "/etc/fstab" do↲
-»-source "fstab"↲
-»-owner "root"↲
-»-group "root"↲
-»-mode "0644"↲
-end↲
+	cookbook_file "/etc/fstab" do
+#		source "aws_secret"
+#		owner "#{username}"
+#		group "ec2-user"
+		mode "0644"
+	end
+
+
