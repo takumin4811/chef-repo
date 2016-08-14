@@ -1,5 +1,5 @@
 /cookbooks/
-/secure/
+/site-cookbooks/security/
 
 .autotest
 coverage
