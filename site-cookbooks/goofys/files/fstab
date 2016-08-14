@@ -1,0 +1,10 @@
+#
+LABEL=/     /           ext4    defaults,noatime  1   1
+tmpfs       /dev/shm    tmpfs   defaults        0   0
+devpts      /dev/pts    devpts  gid=5,mode=620  0   0
+sysfs       /sys        sysfs   defaults        0   0
+proc        /proc       proc    defaults        0   0
+/root/go/bin/goofys#mystrage1 /home/ec2-user/s3 fuse _netdev,allow_other,--file-mode=0666,--uid=500,--gid=500 0 0
+/root/go/bin/goofys#mystrage1 /home/front/s3 fuse _netdev,allow_other,--file-mode=0666,--uid=501,--gid=500 0 0
+/root/go/bin/goofys#mystrage1 /home/apl/s3 fuse _netdev,allow_other,--file-mode=0666,--uid=502,--gid=500 0 0
+
