@@ -40,10 +40,8 @@ end
 end
 
 	cookbook_file "/etc/fstab" do
-#		source "aws_secret"
-#		owner "#{username}"
-#		group "ec2-user"
 		mode "0644"
 	end
+
 
 

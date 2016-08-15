@@ -80,7 +80,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
      chef.add_recipe     "user"
      chef.add_recipe     "security"
      chef.add_recipe     "goofys"
-  #   chef.add_recipe     "apache"
+     chef.add_recipe     "front"
      chef.json = {
 		 }
     # ログレベル
