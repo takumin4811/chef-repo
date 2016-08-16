@@ -33,27 +33,4 @@ user "apl" do
 end
 
 
-%w(ec2-user apl front).each do |username|
 
-	git "/home/"+username+"/dotfiles" do
-			repository "https://github.com/takumin4811/dotfiles.git"
-			reference "master"
-			action :sync
-			user username
-			group "ec2-user"
-	end
-
-
-	bash "setup dotfiles" do
-			user username
-			group "ec2-user"
-			cwd "/home/"+username
-			environment "HOME" => '/home/'+username
-			code <<-EOC
-					ls
-					pwd
-					sh dotfiles/setup.sh
-			EOC
-	end
-
-end
