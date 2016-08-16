@@ -1,0 +1,89 @@
+# ref)http://qiita.com/suthio/items/817d54cf075a67778a0a
+
+VAGRANTFILE_API_VERSION = "2"
+$BOX_NAME="Nginx"
+$BOX_DESC="Nginx"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  # Box名
+  config.vm.box = $BOX_NAME
+  # 「vagrant box add」をしなくていいように設定
+  config.vm.box_url = "https://github.com/mitchellh/vagrant-aws/raw/master/dummy.box"
+
+  # 同期するフォルダを選択（vagrant-awsでは常に同期される訳ではなく、provisionやupなどのコマンド実行時に同期される）
+  #config.vm.synced_folder "./", "/home/ec2-user/vagrant_aws", disabled: false
+  config.vm.provider :aws do |aws, override|
+    # アクセスキー
+    aws.access_key_id     = ENV['AWS_ACCESS_KEY_ID']
+    # シークレットアクセスキー
+    aws.secret_access_key = ENV['AWS_SECRET_ACCESS_KEY']
+    # キー名
+    aws.keypair_name = "myfirstkey"
+    # インスタンスタイプ（http://aws.amazon.com/jp/ec2/pricing/ を参照）
+    aws.instance_type = "t2.micro"
+    # リージョン（東京はap-northeast-1）
+    aws.region = "ap-northeast-1"
+    # アベイラビリティゾーン
+    aws.availability_zone =  "ap-northeast-1a"
+    # 使用するAMIのID
+    aws.ami = "ami-374db956"
+    # セキュリティグループ（複数指定でor判定）
+    # aws.security_groups = ['group1','group2']
+    aws.security_groups = ['sg-11e04a75']
+    # タグ
+    aws.tags = {
+      'Name' => $BOX_NAME,
+      'Description' => $BOX_DESC
+    }
+    # 最初に実行されるシェルスクリプト（sudoできるamiを作成した方が良い）
+    # aws.user_data = "#!/bin/sh\nsed -i 's/^.*requiretty/#Defaults requiretty/' /etc/sudoers\n"
+    # EBSの指定が可能
+    # aws.block_device_mapping = [
+      # {
+      #   # デバイス名
+      #   'DeviceName' => "/dev/sda1",
+      #   # 名称
+      #   'VirtualName' => "ボリューム名",
+      #   # ボリュームサイズ（GB単位）
+      #   'Ebs.VolumeSize' => 100,
+      #   # ターミネートした際に削除するかどうか
+      #   'Ebs.DeleteOnTermination' => true,
+      #   # EBSのタイプを指定
+      #   'Ebs.VolumeType' => 'standard',
+      #   #'Ebs.VolumeType' => 'io1',
+      #   # standardでIOPSを指定するとエラーが発生するので注意
+      #   #'Ebs.Iops' => 1000
+      # }
+    # ]
+    # -----
+    # ここからはVPCを使用する際の設定
+    # サブネットID（マネジメントコンソールから取得）
+    aws.subnet_id = 'subnet-f1241d86'
+    # VPC内のローカルIPアドレスを指定
+    # aws.private_id_address = '192.168.0.33'
+    # 自動的にEIPを割り当てる場合（EIPの取得上限は5個のためそれ以上の指定はエラーとなる）
+    aws.elastic_ip = true
+
+    # -----
+    # SSHのユーザー名を指定（AMIはec2-user、ubuntuはubuntu）
+    override.ssh.username = "ec2-user"
+    # SSHのKeyのパスを指定
+    override.ssh.private_key_path = "~/.ssh/myfirstkey.pem"
+  end
+  # シェルを実行
+  config.vm.provision "shell", :path => "vagrant-provision.sh"
+  # Chefを実行
+   config.vm.provision :chef_solo do |chef|
+     chef.cookbooks_path = ["~/chef-repo/site-cookbooks"]
+     chef.add_recipe     "nginx"
+  #  chef.add_recipe     "apache"
+     chef.json = {
+     }
+    # ログレベル
+    #chef.log_level = :debug
+   end
+  # 仮想環境にインストールするchefのバージョン（latestは最新バージョンという意味）
+  # config.omnibus.chef_version = :latest
+
+end
+
