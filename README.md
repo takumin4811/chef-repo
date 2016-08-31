@@ -28,5 +28,18 @@
 
 	knife solo init ./chef-solo/
 
+	rm -rf ./chef-solo
+
+## Docker－Machineインストール
+	
+	wget https://github.com/docker/machine/releases/download/v0.5.0/docker-machine_linux-amd64.zip -P ./rpm.d
+	mkdir -p ~/docker-machine
+  cd ~/docker-machine
+	unzip ./rpm.d/docker-machine_linux-amd64.zip
+	cd ../
+	sudo mv ./docker-machine/* /usr/local/bin/
+	rmdir docker-machine
 
 
+	
+	

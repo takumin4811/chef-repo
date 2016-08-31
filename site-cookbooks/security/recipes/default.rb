@@ -100,8 +100,10 @@
 			cwd "/home/"+username
 			environment "HOME" => '/home/'+username
 			code <<-EOC
-					sh dotfiles/setup.sh
+					cd dotfiles
+					sh ./setup.sh
 					git remote set-url origin git@github.com:takumin4811/dotfiles.git
+					cd ../
 			EOC
 	end
 
